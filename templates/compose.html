@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiVerse</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        nav {
+            width: 100%;
+            height: 60px;
+            background-color: #0d47a1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-right{
+            padding-right: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it appears on top */
+            right: 0; /* Align to the right if necessary */
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            padding-right: 10px;
+            display: block;
+        }
+
+        .logo-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: transparent; /* Set background to transparent */
+            cursor: pointer;
+            padding-left: 18 px;
+        }
+
+        .logo-button img {
+            width: 50px; /* Match button width */
+            height: 50px; /* Match button height */
+            border-radius: 50%; /* Make image circular */
+            object-fit: cover; /* Ensure image covers the area */
+        }
+
+
+        .home-button, .account-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: #f0f0f0; /* Default background */
+        }
+
+        .home-button img, .account-button img {
+            width: 24px; /* Adjust icon size */
+            height: 24px;
+        }
+
+        .home-button, .account-button {
+            background-color: #007bff; /* Hover background color */
+        }
+
+        .nav-search-container {
+            position: relative;
+            display: inline-block;
+            width: 350px;
+        }
+
+        .nav-search-box {
+            padding: 10px 40px 10px 15px; /* Adjust padding for search icon */
+            border-radius: 25px;
+            border: none;
+            outline: none;
+        }
+
+        .nav-search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-search-button img {
+            height: 20px; /* Adjust icon size */
+        }
+
+
+        .nav-search-container {
+            display: flex;
+            align-items: center;
+            gap:15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input:focus {
+            border-color: #007bff;
+        }
+
+        input, textarea {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus, textarea:focus {
+            border-color: #007bff;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            margin-top: 60px; /* Push content below the navbar */
+            height: 100vh /* Take up the remaining height after the navbar */
+        }
+
+        .right-column,.left-column {
+            flex: 1; /* Equal width for side columns */
+            height: 90%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin-top: 60px;
+        }
+
+        .right-column iframe,.left-column iframe {
+            flex: 1;
+            border-radius: 20px; /* Add curvature to iframe edges */
+            overflow: hidden; /* Ensure content doesn't spill outside rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+
+        .right-column,.left-column {
+            height: 96%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin:10px 10px 10px 10px;
+        }
+
+
+    </style>
+</head>
+<body scrolling="no">
+    <nav>
+        <div class="nav-left">
+            <button class="logo-button">
+                <img src="{% static 'logo-icon.jpeg' %}" alt="Logo">
+            </button>
+            <button class="home-button">
+                <a href="{{ base_url }}"><img src="{% static 'home-icon.svg' %}" alt="Home Button"></a>
+            </button>
+            <div class="nav-search-container">
+                <input type="text" class="search-box" placeholder="Search">
+                <button class="nav-search-button">
+                    <img src="{% static 'search-icon.svg' %}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="dropdown">
+                <button class="account-button dropbtn">
+                    <img src="{% static 'account-icon.svg' %}" alt="Account Icon">
+                </button>
+                <div class="dropdown-content">
+                    <a href="{{ base_url }}account/">My Account</a>
+                    <a href="{{ base_url }}signout/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container" scrolling="no">
+        <div class="left-column">
+            <iframe src="{{ base_url }}lyric/" scrolling="no" style="border:none; overflow: hidden;"></iframe>
+        </div>
+
+
+        <div class="right-column">
+            <iframe src="{{ base_url }}generate/" scrolling="no" style="border:none; overflow: hidden;" id="generate"></iframe>
+        </div>
+    </div>
+    <script>
+        const iframe = document.querySelector('iframe[src*="{{ base_url }}lyric/"]');
+
+// Function to update iframe src with a message parameter
+    </script>
+</body>
+</html>

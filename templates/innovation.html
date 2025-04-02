@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musify</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px 8px 10px 5px;
+      text-align: center;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #e3f2fd; /* Dark Blue Background */
+      scroll-behavior: no;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center horizontally */
+    }
+
+    .upload-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px; /* Add some space between button and div */
+    }
+
+    .scrollable-div {
+      width: 80%; /* Adjust width to fit content */
+      height: 40vh; /* Adjust height to fit content */
+      overflow-y: auto; /* Add scrollbar if content exceeds height */
+      border: 1px solid #ddd; /* Light gray border */
+      border-radius: 10px; /* Rounded corners */
+      padding: 10px; /* Add some padding inside the div */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+      background-color: #f9f9f9; /* Light gray background */
+    }
+
+    .file-list {
+      padding: 10px;
+      border-bottom: none; /* Removed bottom border for cleaner look */
+      background-color: #007bff; /* Dark blue background */
+      border-radius: 10px; /* Curved edges */
+      margin-bottom: 10px; /* Add some space between file entries */
+      cursor: pointer; /* Change cursor to pointer for click effect */
+    }
+
+    .file-list a {
+      text-decoration: none;
+      color: white; /* White text color to contrast with dark background */
+    }
+
+    .file-list a:hover {
+      color: #ccc; /* Lighter text color on hover */
+    }
+
+    .file-list.selected {
+      background-color: #0056b3; /* Darker blue for selected state */
+    }
+  </style>
+</head>
+<body>
+
+<div class="section">
+  <input type="file" id="fileInput" hidden multiple accept=".mp3">
+  <label for="fileInput" class="upload-button">Upload MP3 Files</label>
+  <div class="scrollable-div" id="fileList">
+    <!-- Files will be listed here -->
+  </div>
+</div>
+
+
+<script>
+
+
+</script>
+</body>
+</html>

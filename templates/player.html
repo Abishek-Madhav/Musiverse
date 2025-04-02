@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musify</title>
+  <style>
+body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px 8px 10px 5px;
+      text-align: center;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #e3f2fd; /* Dark Blue Background */
+      scroll-behavior: no;
+    }
+
+
+    .cover-page {
+      flex: 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cover-image {
+      width: 60%; /* Adjust as needed */
+      height: auto; /* Maintain aspect ratio */
+      border-radius: 5px;
+      object-fit: cover; /* Ensure image covers the area */
+      aspect-ratio: 1/1; /* Ensure the image is square */
+      padding-bottom: 5px;
+    }
+
+    .music-player-container {
+      flex: 2;
+    }
+
+
+    .music-player {
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .controls button {
+      background-color: #0056b3;
+      color: white;
+      border: none;
+      padding: 5px 14px;
+      margin: 0 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+
+    .controls button img {
+      width: 16px; /* Adjust icon size */
+      height: 16px; /* Adjust icon size */
+    }
+
+    #seekbar {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    #current-time {
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+
+    .lyric-page {
+      flex: 4;
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      padding: 20px;
+      margin: 20px auto;
+      width: 80%; /* Adjust width as needed */
+      max-height: 200px; /* Limit the height */
+      overflow-y: auto; /* Enable vertical scrolling */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+    }
+
+    .lyric-page p {
+      font-size: 1em;
+      line-height: 1.5;
+      color: #000; /* Black text for readability */
+    }
+
+  </style>
+</head>
+<body>
+    <div class="cover-page">
+        <img src="{{ cover }}" alt="Album Cover" class="cover-image">
+    </div>
+    <h2 id="songTitle">{{ title }}</h2>
+    <div class="music-player-container">
+        <div class="music-player">
+
+            <audio id="audio" src="{{ audio }}"></audio>
+            <div class="controls">
+                <button style="font-size: 1em" id="loop">
+                    <img src="{% static 'loop-icon.png' %}" alt="Loop Icon">
+                </button>
+                <button id="rewind">⏮</button>
+                <button id="play-pause">
+                    <img src="{% static 'play-icon.png' %}" alt="Play Icon">
+                </button>
+                <button id="forward">⏭</button>
+                <button style="font-size: 1em" id="download">
+                    <img src="{% static 'download-icon.svg' %}"></img>
+                </button>
+            </div>
+            <input type="range" id="seekbar" value="0" max="100">
+            <p id="current-time">0:00</p>
+        </div>
+    </div>
+    <div class="lyric-page">
+        <p id="songLyrics">{{ lyrics }}</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+                const audio = document.getElementById("audio");
+                const playPauseBtn = document.getElementById("play-pause");
+                const loopBtn = document.getElementById("loop");
+                const rewindBtn = document.getElementById("rewind");
+                const forwardBtn = document.getElementById("forward");
+                const seekbar = document.getElementById("seekbar");
+                const currentTimeDisplay = document.getElementById("current-time");
+                const downloadBtn = document.getElementById("download");
+
+                let isPlaying = false;
+
+                // Play/Pause Functionality
+                playPauseBtn.addEventListener("click", () => {
+                    if (isPlaying) {
+                        audio.pause();
+                        playPauseBtn.querySelector("img").src = "{% static 'play-icon.png' %}"; // Update to play icon
+                        isPlaying = false;
+                    } else {
+                        audio.play();
+                        playPauseBtn.querySelector("img").src = "{% static 'pause-icon.png' %}"; // Update to pause icon
+                        isPlaying = true;
+                    }
+                });
+
+
+                // Update Seekbar Dynamically
+                audio.addEventListener("timeupdate", () => {
+                    if (!audio.duration) return; // Prevent divide by zero
+                    seekbar.value = (audio.currentTime / audio.duration) * 100;
+                    updateTimeDisplay();
+                });
+
+                // Seekbar Dragging (Allows users to move seekbar to any time)
+                seekbar.addEventListener("input", () => {
+                    if (audio.duration) {
+                        audio.currentTime = (seekbar.value / 100) * audio.duration;
+                    }
+                });
+
+                // Rewind by 10 seconds
+                rewindBtn.addEventListener("click", () => {
+                    if (audio.duration) {
+                        audio.currentTime = Math.max(audio.currentTime - 10, 0);
+                        updateSeekbar(); // Sync seekbar immediately
+                    }
+                });
+
+                // Forward by 10 seconds
+                forwardBtn.addEventListener("click", () => {
+                    if (audio.duration) {
+                        audio.currentTime = Math.min(audio.currentTime + 10, audio.duration);
+                        updateSeekbar(); // Sync seekbar immediately
+                    }
+                });
+
+                // Loop Functionality
+                loopBtn.addEventListener("click", () => {
+                    audio.loop = !audio.loop;
+                    const loopIcon = loopBtn.querySelector("img");
+                    loopIcon.src = audio.loop
+                        ? "{% static 'loop-icon.png' %}"
+                        : "{% static 'loop-disable-icon.png' %}";
+                });
+
+                // Download Audio File
+                downloadBtn.addEventListener("click", () => {
+                    const audioSrc = audio.src;
+
+                    const anchor = document.createElement("a");
+                    anchor.href = audioSrc;
+                    anchor.download = "downloaded_audio.mp3"; // Default filename
+                    document.body.appendChild(anchor);
+                    anchor.click();
+                    document.body.removeChild(anchor);
+                });
+
+                // Function to Update Seekbar
+                function updateSeekbar() {
+                    if (audio.duration) {
+                        seekbar.value = (audio.currentTime / audio.duration) * 100;
+                    }
+                }
+
+                // Function to Update Time Display
+                function updateTimeDisplay() {
+                    const minutes = Math.floor(audio.currentTime / 60);
+                    const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
+                    currentTimeDisplay.textContent = `${minutes}:${seconds}`;
+                }
+
+                // Optional: Add error handling for audio loading
+                audio.addEventListener("error", () => {
+                    console.error("Error loading audio file.");
+                });
+            });
+    </script>
+</body>
+</html>

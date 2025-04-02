@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musify</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      height: 100vh; /* Full height of the viewport */
+      display: flex;
+      flex-direction: column;
+      background-color: #e3f2fd; /* Dark Blue Background */
+    }
+
+    .lyric-page {
+      flex: 4; /* Each div takes more height */
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      margin: 10px auto;
+      width: 95%; /* Adjust width as needed */
+      overflow-y: auto; /* Enable vertical scrolling */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+      position: relative; /* Positioning for internal elements */
+    }
+
+    .top-left-corner {
+      position: relative; /* Position the h2 relative to its parent div */
+      margin-bottom: 10px; /* Add spacing between h2 and textarea */
+      text-align: left; /* Align text to the left */
+      padding-left: 20px; /* Add padding to match styling */
+    }
+
+    .lyric-page textarea {
+      width: calc(100% - 40px); /* Adjust width to fit inside padding */
+      height: calc(100% - 100px); /* Adjust height to leave space at the bottom */
+      overflow-y: auto; /* Enable vertical scrolling */
+      background-color: #333; /* Dark background */
+      color: white; /* White text */
+      resize: none; /* Prevent resizing */
+      border-radius: 10px; /* Curve the edges of the textarea */
+      border: none; /* Remove default border */
+    }
+
+    .suggest-page {
+      flex: 2; /* Each div takes less height */
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      max-height: 80px;
+      margin: 10px auto;
+      width: 80%; /* Adjust width as needed */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Center items vertically */
+      justify-content: space-between; /* Space items horizontally */
+      padding: 10px; /* Add padding inside the container */
+    }
+
+    .suggest-page textarea {
+      width: calc(90% - 20px); /* Adjust width to fit inside padding and share space with button */
+      height: calc(100% - 20px); /* Match div height with padding accounted for */
+      overflow-y: auto; /* Enable vertical scrolling if needed */
+      color: black; /* White text color for better readability */
+      resize: none; /* Prevent resizing of textarea by user */
+      border-radius: 10px; /* Curve edges of textarea */
+      border: none; /* Remove default border styling */
+    }
+
+    .suggest-page button {
+      padding: 10px;
+      background-color: #0056b3; /* Button color (blue) */
+      color: white;
+      border-radius: 50px; /* Circular border for button */
+      border: none; /* Remove default border styling on button */
+      cursor: pointer;
+    }
+
+    .suggest-page button:hover {
+      background-color: #003d80; /* Darker blue on hover for better UX effect */
+    }
+
+    .suggest-page button {
+        margin-top :10 px
+}
+
+</style>
+</head>
+<body>
+
+<div class="lyric-page">
+    <h2 class="top-left-corner">Generated Lyric</h2>
+    <textarea id="lyric">{{lyric}}
+    </textarea>
+</div>
+
+<div class="suggest-page">
+    <textarea id="suggest" placeholder="Enter your suggestion here..."></textarea>
+    <button class="regenerate" id="regenerate">Regenerate</button>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const lyricArea = document.getElementById('lyric');
+    const suggestArea = document.getElementById('suggest');
+    const sendButton = document.getElementById('regenerate');
+
+    sendButton.addEventListener('click', function () {
+        // Check if the suggest textarea input is not null or empty
+        if (suggestArea.value.trim() !== '') {
+            // Generate a URL type request
+            const baseUrl = window.location.origin; // Use current origin as base URL
+            const params = new URLSearchParams({
+                "regenerate": lyricArea.value + suggestArea.value // Pass both textarea values as a parameter
+            });
+            suggestArea.value="";
+            const url = `${baseUrl}/lyric?${params.toString()}`;
+
+            // Redirect to the generated URL
+            window.location.href = url;
+        } else {
+            // Handle the case when suggest textarea input is null or empty
+            alert('Please enter a suggestion.');
+        }
+
+    });
+});
+
+
+</script>
+
+</body>
+</html>

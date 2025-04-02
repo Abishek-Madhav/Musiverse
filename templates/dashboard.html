@@ -1,0 +1,741 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiVerse</title>
+    <style>
+html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        nav {
+            width: 100%;
+            height: 60px;
+            background-color: #0d47a1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            margin-top: 60px; /* Push content below the navbar */
+            height: 100vh /* Take up the remaining height after the navbar */
+        }
+        .center-column {
+            flex: 3; /* Wider center column */
+            display: flex;
+            max-width: 700px;
+            justify-content: center;
+            height: 90%;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .right-column,.left-column {
+            flex: 1; /* Equal width for side columns */
+            height: 90%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin-top: 60px;
+        }
+
+        .right-column iframe,.left-column iframe {
+            flex: 1;
+            border-radius: 20px; /* Add curvature to iframe edges */
+            overflow: hidden; /* Ensure content doesn't spill outside rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+
+        .right-column,.left-column {
+            height: 96%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin:10px 10px 10px 10px;
+        }
+
+
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-right{
+            padding-right: 20px;
+        }
+
+        .logo-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: transparent; /* Set background to transparent */
+            cursor: pointer;
+            padding-left: 18 px;
+        }
+
+        .logo-button img {
+            width: 50px; /* Match button width */
+            height: 50px; /* Match button height */
+            border-radius: 50%; /* Make image circular */
+            object-fit: cover; /* Ensure image covers the area */
+        }
+
+
+        .home-button, .account-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: #f0f0f0; /* Default background */
+        }
+
+        .home-button img, .account-button img {
+            width: 24px; /* Adjust icon size */
+            height: 24px;
+        }
+
+        .home-button, .account-button {
+            background-color: #007bff; /* Hover background color */
+        }
+
+        .nav-search-container {
+            position: relative;
+            display: inline-block;
+            width: 350px;
+        }
+
+        .nav-search-box {
+            padding: 10px 40px 10px 15px; /* Adjust padding for search icon */
+            border-radius: 25px;
+            border: none;
+            outline: none;
+        }
+
+        .nav-search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-search-button img {
+            height: 20px; /* Adjust icon size */
+        }
+
+
+        .nav-search-container {
+            display: flex;
+            align-items: center;
+            gap:15px;
+        }
+
+        /* Style the dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it appears on top */
+            right: 0; /* Align to the right if necessary */
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            padding-right: 10px;
+            display: block;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            position: absolute;
+            bottom: 2%;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-container {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            gap: 2%;
+            margin-bottom: 2%;
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 2%;
+        }
+        .toggle-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px; /* Adjust size as needed */
+            height: 45px;
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: #f0f0f0; /* Default background */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .toggle-button img {
+            width: 24px; /* Adjust icon size */
+            height: 24px;
+        }
+
+        .toggle-button:hover {
+            background-color: #007bff; /* Hover background color */
+        }
+
+        .toggle-button.active {
+            background-color: #0056b3; /* Active state background color */
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input:focus {
+            border-color: #007bff;
+        }
+
+        input, textarea {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus, textarea:focus {
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: none; /* Prevent resizing */
+            overflow-y: auto; /* Show scrollbar if needed */
+            height: 50px; /* Set initial height */
+        }
+        textarea::placeholder {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .send-button {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background-color: #0d47a1;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+        .scrollable-container {
+            width: 90%; /* Takes full width of the parent */
+            max-height: 300px; /* Adjust height as needed */
+            overflow-x: auto; /* Enables horizontal scroll */
+            overflow-y: hidden; /* Hides vertical scrollbar */
+            background-color: #f9f9f9; /* Background color for the container */
+            border-radius: 10px; /* Rounded edges */
+            padding: 10px;
+            margin: 20px 0; /* Space between containers */
+            display: flex; /* Flexbox for horizontal layout */
+            align-items: center; /* Centers content vertically */
+        }
+
+        .scrollable-container::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .scrollable-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        .image-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px; /* Adds padding around the image and name */
+            background-color: #bbdefb; /* Background color for the card */
+            border: 2px solid #000; /* Bold border around the card */
+            border-radius: 10px; /* Curved edges for the card */
+            margin-right: 15px; /* Space between cards */
+            width: fit-content; /* Adjusts width to fit content */
+        }
+
+        .image-card img {
+            width: 150px; /* Square image size */
+            height: 150px; /* Square image size */
+            border-radius: 15px; /* Curved edges for images */
+        }
+
+        .image-card span {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold; /* Make the song name bold */
+        }
+
+
+        iframe {
+            border: none; /* Removes the border */
+            outline: none; /* Ensures no outline appears */
+        }
+
+        .cover-page {
+          flex: 4;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .cover-image {
+          width: 60%; /* Adjust as needed */
+          height: auto; /* Maintain aspect ratio */
+          border-radius: 5px;
+          object-fit: cover; /* Ensure image covers the area */
+          aspect-ratio: 1/1; /* Ensure the image is square */
+          padding-bottom: 5px;
+        }
+
+        .music-player-container {
+          flex: 2;
+        }
+        
+        .right-column {
+          font-family: Arial, sans-serif;
+          margin-top: 2%;
+          padding: 10px 8px 10px 5px;
+          text-align: center;
+          height: 90%;
+          display: flex;
+          flex-direction: column;
+          background-color: #e3f2fd; /* Dark Blue Background */
+          scroll-behavior: no;
+        }
+
+        .music-player {
+          background-color: white;
+          border-radius: 10px;
+          padding: 10px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 80%;
+          margin: 0 auto;
+        }
+
+        .controls {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 10px;
+        }
+
+        .controls button {
+          background-color: #0056b3;
+          color: white;
+          border: none;
+          padding: 5px 14px;
+          margin: 0 5px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+
+        .controls button img {
+          width: 16px; /* Adjust icon size */
+          height: 16px; /* Adjust icon size */
+        }
+
+        #seekbar {
+          width: 90%;
+          margin-top: 10px;
+        }
+
+        #current-time {
+          margin-top: 5px;
+          font-size: 0.9em;
+        }
+
+        .lyric-page {
+          flex: 4;
+          background-color: #bbdefb; /* Light Blue Background */
+          border-radius: 10px; /* Rounded corners */
+          padding: 20px;
+          margin: 20px auto;
+          width: 80%; /* Adjust width as needed */
+          max-height: 200px; /* Limit the height */
+          overflow-y: auto; /* Enable vertical scrolling */
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+        }
+
+        .lyric-page p {
+          font-size: 1em;
+          line-height: 1.5;
+          color: #000; /* Black text for readability */
+        }
+
+
+
+    </style>
+</head>
+<body scrolling="no">
+    <nav>
+        <div class="nav-left">
+            <button class="logo-button">
+                <img src="{% static 'logo-icon.jpeg' %}" alt="Logo">
+            </button>
+            <button class="home-button">
+                <a href="{{ base_url }}"><img src="{% static 'home-icon.svg' %}" alt="Home Button"></a>
+            </button>
+            <div class="nav-search-container">
+                <input type="text" class="search-box" placeholder="Search">
+                <button class="nav-search-button">
+                    <img src="{% static 'search-icon.svg' %}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="dropdown">
+                <button class="account-button dropbtn">
+                    <img src="{% static 'icons/account-icon.svg' %}" alt="Account Icon">
+                </button>
+                <div class="dropdown-content">
+                    <a href="{{ base_url }}account/">My Account</a>
+                    <a href="{{ base_url }}signout/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container" scrolling="no">
+        <div class="left-column">
+            <iframe src="{{ base_url }}innovation/" scrolling="no"></iframe>
+        </div>
+        <div class="center-column">
+            <div class="hello-container">
+               <h1>Hello {{ user_name }}!</h1>
+            </div>
+
+            <div class="scrollable-container">
+                {% for song in songs %}
+                    <div class="image-card" 
+                         data-song-url="{{ song.song_url }}"
+                         data-song-name="{{ song.song_name}}"
+                         data-image-url="{{ song.image_url}}"
+                         data-song-lyrics="{{ song.song_lyrics}}">
+                        <img src="{{ song.image_url }}" alt="Song Cover">
+                        <span>{{ song.song_name }}</span>
+                    </div>
+                {% empty %}
+                    <p>No songs available.</p>
+                {% endfor %}
+            </div>
+
+
+            <div class="chat-container">
+                <div class="input-container">
+                    <textarea class="prompt-area" id="prompt-area" placeholder="Enter your prompt here..."></textarea>
+                    <button class="send-button">Send</button>
+                </div>
+                <div class="toggle-buttons">
+                    <button class="toggle-button active" id="lyricButton">
+                        <img src="{% static 'lyric-icon.svg' %}"alt="Lyric Icon">
+                    </button>
+                    <button class="toggle-button" id="composeButton">
+                        <img src="{% static 'compose-icon.svg' %}" alt="Compose Icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="right-column">
+            <div class="right-iframe">
+                <div class="cover-page">
+                    <img src="{{ cover }}" alt="Album Cover" class="cover-image">
+                </div>
+                <h2 id="songTitle">{{ title }}</h2>
+                <div class="music-player-container">
+                    <div class="music-player">
+
+                        <audio id="audio" src="{{ audio }}"></audio>
+                        <div class="controls">
+                            <button style="font-size: 1em" id="loop">
+                                <img src="{% static 'loop-icon.png' %}" alt="Loop Icon">
+                            </button>
+                            <button id="rewind">⏮</button>
+                            <button id="play-pause">
+                                <img src="{% static 'play-icon.png' %}" alt="Play Icon">
+                            </button>
+                            <button id="forward">⏭</button>
+                            <button style="font-size: 1em" id="download">
+                                <img src="{% static 'download-icon.svg' %}"></img>
+                            </button>
+                        </div>
+                        <input type="range" id="seekbar" value="0" max="100">
+                        <p id="current-time">0:00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lyric-page">
+                <p id="songLyrics">{{ lyrics }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Toggle buttons functionality
+    document.querySelectorAll('.toggle-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.toggle-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Update player when a song is clicked
+    document.querySelectorAll(".image-card").forEach(card => {
+        card.addEventListener("click", function() {
+            const song_url = this.dataset.songUrl;
+            const song_name = this.dataset.songName;
+            const image_url = this.dataset.imageUrl;
+            const song_lyrics = this.dataset.songLyrics;
+
+            updatePlayer(song_url, song_name, image_url, song_lyrics);
+        });
+    });
+
+    function updatePlayer(song_url, song_name, image_url, song_lyrics) {
+        console.log("Updating Player with:");
+        console.log("URL:", song_url);
+        console.log("Name:", song_name);
+        console.log("Image:", image_url);
+        console.log("Lyrics:", song_lyrics);
+
+        // Update the elements in the right column
+        document.querySelector('.cover-image').src = image_url;
+        document.getElementById('songTitle').innerText = song_name;
+        document.getElementById('audio').src = song_url;
+        document.getElementById('songLyrics').innerText = song_lyrics;
+
+        // Optionally, play the audio automatically
+        document.getElementById('audio').play();
+    }
+
+    // Get the send button, compose button, and textarea elements
+    const sendButton = document.querySelector('.send-button');
+    const composeButton = document.getElementById('composeButton');
+    const textarea = document.getElementById('prompt-area');
+
+    sendButton.addEventListener('click', function () {
+        // Check if the compose button is active
+        if (composeButton.classList.contains('active')) {
+            // Check if textarea input is not null or empty
+            if (textarea.value.trim() !== '') {
+                // Generate a URL type request
+                const baseUrl = window.location.origin; // Use current origin as base URL
+                const params = new URLSearchParams({
+                    message: textarea.value // Assuming you want to pass the textarea value as a parameter
+                });
+                const url = `${baseUrl}/compose?${params.toString()}`;
+
+                // Redirect to the generated URL
+                window.location.href = url;
+            } else {
+                // Handle the case when textarea input is null or empty
+                alert('Please enter a prompt.');
+            }
+        } else {
+            if (textarea.value.trim() !== '') {
+                // Send data using a POST request
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCSRFToken() // Include CSRF token
+                    },
+                    body: new URLSearchParams({ message: textarea.value })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.body.innerHTML = data; // Replace page content with response
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Please enter a prompt.');
+            }
+        }
+    });
+
+    function getCSRFToken() {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+    }
+
+    // Audio player controls
+    const audio = document.getElementById("audio");
+    const playPauseBtn = document.getElementById("play-pause");
+    const loopBtn = document.getElementById("loop");
+    const rewindBtn = document.getElementById("rewind");
+    const forwardBtn = document.getElementById("forward");
+    const seekbar = document.getElementById("seekbar");
+    const currentTimeDisplay = document.getElementById("current-time");
+    const downloadBtn = document.getElementById("download");
+
+    let isPlaying = false;
+
+    // Play/Pause Functionality
+    playPauseBtn.addEventListener("click", () => {
+        if (audio.paused) {
+            audio.play();
+            playPauseBtn.querySelector("img").src = "{% static 'pause-icon.png' %}"; // Update to pause icon
+            isPlaying = true;
+        } else {
+            audio.pause();
+            playPauseBtn.querySelector("img").src = "{% static 'play-icon.png' %}"; // Update to play icon
+            isPlaying = false;
+        }
+    });
+
+    // Update Seekbar Dynamically
+    audio.addEventListener("timeupdate", () => {
+        if (!audio.duration) return; // Prevent divide by zero
+        seekbar.value = (audio.currentTime / audio.duration) * 100;
+        updateTimeDisplay();
+    });
+
+    // Seekbar Dragging (Allows users to move seekbar to any time)
+    seekbar.addEventListener("input", () => {
+        if (audio.duration) {
+            audio.currentTime = (seekbar.value / 100) * audio.duration;
+        }
+    });
+
+    // Rewind by 10 seconds
+    rewindBtn.addEventListener("click", () => {
+        if (audio.duration) {
+            audio.currentTime = Math.max(audio.currentTime - 10, 0);
+            updateSeekbar(); // Sync seekbar immediately
+        }
+    });
+
+    // Forward by 10 seconds
+    forwardBtn.addEventListener("click", () => {
+        if (audio.duration) {
+            audio.currentTime = Math.min(audio.currentTime + 10, audio.duration);
+            updateSeekbar(); // Sync seekbar immediately
+        }
+    });
+
+    // Loop Functionality
+    loopBtn.addEventListener("click", () => {
+        audio.loop = !audio.loop;
+        const loopIcon = loopBtn.querySelector("img");
+        loopIcon.src = audio.loop
+            ? "{% static 'loop-icon.png' %}"
+            : "{% static 'loop-disable-icon.png' %}";
+    });
+
+    // Download Audio File
+    downloadBtn.addEventListener("click", () => {
+        const audioSrc = audio.src;
+
+        const anchor = document.createElement("a");
+        anchor.href = audioSrc;
+        anchor.download = "downloaded_audio.mp3"; // Default filename
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+    });
+
+    // Function to Update Seekbar
+    function updateSeekbar() {
+        if (audio.duration) {
+            seekbar.value = (audio.currentTime / audio.duration) * 100;
+        }
+    }
+
+    // Function to Update Time Display
+    function updateTimeDisplay() {
+        const minutes = Math.floor(audio.currentTime / 60);
+        const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
+        currentTimeDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    // Optional: Add error handling for audio loading
+    audio.addEventListener("error", () => {
+        console.error("Error loading audio file.");
+    });
+});
+
+
+
+
+
+    </script>
+</body>
+</html>

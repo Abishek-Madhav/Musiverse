@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musify</title>
+  <style type="text/css">
+body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      height: 100vh; /* Full height of the viewport */
+      display: flex;
+      flex-direction: column;
+      background-color: #e3f2fd; /* Dark Blue Background */
+    }
+
+    .upload-page {
+      flex: 4; /* Each div takes more height */
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      margin: 10px auto;
+      width: 95%; /* Adjust width as needed */
+      overflow-y: auto; /* Enable vertical scrolling */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+      position: relative; /* Positioning for internal elements */
+      display: flex;
+      flex-direction: column;
+    }
+
+
+
+    .upload-button {
+      margin: 8px auto;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    .upload-button:hover {
+      background-color: #3e8e41;
+    }
+
+    .uploaded-files-container {
+      padding: 20px;
+      flex-grow: 1;
+      background-color: #2c3e50; /* Dark Background */
+      border-radius: 10px; /* Rounded corners */
+      overflow-y: auto;
+      margin-bottom: 15px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .uploaded-files {
+      padding: 7px;
+      background-color: #34495e; /* Darker Background */
+      border-radius: 5px; /* Rounded corners */
+      overflow-y: auto;
+      display: none; /* Initially hidden */
+    }
+
+    .file-item {
+      background-color: #f0f0f0; /* Light Background */
+      padding: 7px;
+      border-radius: 5px; /* Rounded corners */
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+    }
+
+    .remove-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .remove-button:hover {
+      background-color: #c82333;
+    }
+
+    .custormize-page {
+      flex: 4; /* Each div takes more height */
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      margin: 10px auto;
+      width: 95%; /* Adjust width as needed */
+      overflow-y: auto; /* Enable vertical scrolling */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+      position: relative; /* Positioning for internal elements */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .custormize-page {
+      display: flex;
+      height: 100%; /* Ensure it takes full height */
+    }
+
+    .customization-left {
+      flex: 3;
+      background-color: #bbdefb;
+      border-radius: 10px;
+      margin: 10px;
+    }
+
+    .customization-right {
+      flex: 2;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      margin: 10px;
+      margin-bottom: 100px;
+      margin-right: 15px;
+    }
+
+    #songDescription {
+      width: 100%;
+      padding: 8px;
+      margin: 4px 0;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+
+    #soundTags {
+      padding: 10px;
+      background-color: #e3f2fd;
+      border-radius: 10px;
+      overflow-x: auto; /* Enable horizontal scrolling */
+      white-space: nowrap; /* Prevent wrapping to new line */
+    }
+
+    .sound-tag {
+      background-color: #e3f2fd; /* Light Blue Background */
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      display: inline-block; /* Display inline for horizontal scrolling */
+    }
+
+    .sound-tag.selected {
+      background-color: #2c3e50; /* Dark Blue Background */
+      color: white;
+    }
+    .suggest-page {
+      flex: 2; /* Each div takes less height */
+      background-color: #bbdefb; /* Light Blue Background */
+      border-radius: 10px; /* Rounded corners */
+      width: 100%; /* Adjust width as needed */
+      height: 100%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Center items vertically */
+      justify-content: space-between; /* Space items horizontally */
+    }
+
+    .suggest-page textarea {
+      width: calc(90% - 30px); /* Adjust width to fit inside padding and share space with button */
+      height:90%; /* Match div height with padding accounted for */
+      overflow-y: auto; /* Enable vertical scrolling if needed */
+      color: black; /* White text color for better readability */
+      resize: none; /* Prevent resizing of textarea by user */
+      border-radius: 10px; /* Curve edges of textarea */
+      border: none; /* Remove default border styling */
+    }
+
+    .suggest-page button {
+      padding: 10px;
+      background-color: #0056b3; /* Button color (blue) */
+      color: white;
+      border-radius: 50px; /* Circular border for button */
+      border: none; /* Remove default border styling on button */
+      cursor: pointer;
+    }
+
+    .suggest-page button:hover {
+      background-color: #003d80; /* Darker blue on hover for better UX effect */
+    }
+
+    .suggest-page button {
+        margin-top :5 px
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="upload-page">
+    <h2>Upload Music</h2>
+    <button class="upload-button" onclick="uploadFile()">Upload MP3 File
+        <input type="file" id="fileInput" style="display: none;" accept=".mp3" multiple>
+    </button>
+    <div class="uploaded-files-container">
+      <div class="uploaded-files" id="uploadedFiles"></div>
+    </div>
+  </div>
+  <div class="custormize-page">
+    <div class="customization-left">
+      <h2>Sound</h2>
+      <input type="text" id="songDescription" placeholder="Describe the song or vibe">
+      <div id="soundTags"></div>
+    </div>
+    <div class="customization-right">
+      <div class="suggest-page">
+        <textarea placeholder="Add Title...(Optional)"></textarea>
+        <button>Generate Music</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>let uploadedFiles = [];
+
+    function uploadFile() {
+      document.getElementById('fileInput').click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const files = e.target.files;
+      for (let file of files) {
+        if (file.type === 'audio/mpeg') {
+          uploadedFiles.push(file);
+          displayUploadedFiles();
+        } else {
+          alert('Only MP3 files are allowed.');
+        }
+      }
+    });
+
+    function displayUploadedFiles() {
+      const uploadedFilesDiv = document.getElementById('uploadedFiles');
+      uploadedFilesDiv.innerHTML = '';
+
+      if (uploadedFiles.length > 0) {
+        uploadedFilesDiv.style.display = 'block'; // Show the div if files are uploaded
+      } else {
+        uploadedFilesDiv.style.display = 'none'; // Hide the div if no files are uploaded
+      }
+
+      uploadedFiles.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.classList.add('file-item');
+
+        const fileName = document.createElement('span');
+        fileName.textContent = file.name;
+        fileItem.appendChild(fileName);
+
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove-button');
+        removeButton.textContent = 'Remove';
+        removeButton.onclick = function() {
+          uploadedFiles.splice(index, 1);
+          displayUploadedFiles();
+        };
+        fileItem.appendChild(removeButton);
+
+        uploadedFilesDiv.appendChild(fileItem);
+      });
+    }
+    // List of sound tags
+    const soundTags = [
+      'Happy', 'Energetic', 'Calm', 'Upbeat', 'Slow', 'Melodic', 'Harmonic', 'Dynamic', 'Ethereal', 'Vibrant', 'Soulful', 'Tranquil', 'Uplifting', 'Joyful', 'Melancholic'
+    ];
+
+    // Function to generate sound tags
+    function generateSoundTags() {
+      const soundTagsDiv = document.getElementById('soundTags');
+      soundTagsDiv.innerHTML = '';
+
+      soundTags.forEach(tag => {
+        const tagElement = document.createElement('button');
+        tagElement.classList.add('sound-tag');
+        tagElement.textContent = tag;
+
+        tagElement.addEventListener('click', function() {
+          if (tagElement.classList.contains('selected')) {
+            tagElement.classList.remove('selected');
+            removeTagFromInput(tag);
+          } else {
+            tagElement.classList.add('selected');
+            addTagToInput(tag);
+          }
+        });
+
+        soundTagsDiv.appendChild(tagElement);
+      });
+    }
+
+    // Function to add tag to input
+    function addTagToInput(tag) {
+      const input = document.getElementById('songDescription');
+      const currentText = input.value.trim();
+    }
+
+    // Function to remove tag from input
+    function removeTagFromInput(tag) {
+      const input = document.getElementById('songDescription');
+    }
+
+    // Initialize sound tags
+    generateSoundTags();
+
+  </script>
+
+</body>
+</html>

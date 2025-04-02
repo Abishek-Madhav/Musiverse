@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "title": "Over the Rainbow",
+        "cover": "/static/cover-icon.jpeg",
+        "audio":"/static/ab3.mp3",
+        "lyrics": "Somewhere over the rainbow, way up high..."
+    },
+    {
+        "id": "2",
+        "title": "Over the Rainbow",
+        "cover": "/static/cover-icon.jpeg",
+        "lyrics": "Somewhere over the rainbow, way up high..."
+    },
+    {
+        "id": "2",
+        "title": "Over the Rainbow",
+        "cover": "/static/cover-icon.jpeg",
+        "lyrics": "Somewhere over the rainbow, way up high..."
+    }
+
+]
